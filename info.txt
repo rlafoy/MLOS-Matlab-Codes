@@ -1,0 +1,60 @@
+There are many more tomo codes that I have written, but these are the primarily useful ones.  Once we got a copy of DaVis to do MART reconstructions and discovered that we could do the MLOS reconstructions in DaVis (except much faster), I for the most part quit working on developing these codes.  So unfortunately the process of inputing images and getting 3D vector fields out from this code will take some work.  Everything you should need is here, but it won't be straight forward.
+
+Here is a list of the codes and what they roughly do:
+
+'faster_dace'
+
+This folder contains codes to perform the Kriging interpolation for calibration.  This code is based upon the 'DACE' code downloaded online, however it has been modified to run faster and use memory more efficiently.
+
+'calculate_cubic_calibration_test_03.m'
+
+This codes is for calculating a cubic calibration function from a set of (x,y,X,Y,Z) calibration points on the camera and the from world coordinates.  This calbration function is the same one that is used in DaVis as well as our stereo code I beleive.  This function is mostly complete, however a final version was never compiled and it has not been thoroughly tested.
+
+'calculate_linear_calibration_01.m'
+
+This code takes a set of (x,y,X,Y,Z) calibration points on the camera and the world coordinates and generates a linear (or pinhole) calibration function from them using a mathematically optimal procedure (ie you get the "best" calibration function possible from the probably over-determined system of equations).  This function also has the ability to produce a graph of the camera locations with respect to the imaged volume which gives a nice intuitive sense of the camera positions (although this part needs some work).  This function is complete and has been tested significantly.
+
+'camera_calibration_01.m'
+
+This function is designed to take in a series of calibration grid images from the cameras and output a series of (x,y,X,Y,Z) points that may be used to generate a calibration function.  The function works by displaying an image of the calibration grid which the user clicks on points to establish a coordinate system.  The location of the grid points is then iteratively located to sub-pixel accuracy.  The function works pretty well in it's current state, but could be improved (especially by adding a nice GUI interface).  The function seems to work well, although it has never been quantitatively tested.
+
+'display_calculation_progress.m'
+
+This isn't a tomography function, but several of the functions call this.  This function displays a bar graph on the command line in matlab showing the percentage of a 'for' loop that is completed.  This is nice for cases where the processing takes a long time, but you don't want the command window filled with processing updates.
+
+'ghost_particle_statistics_02.m'
+
+This function was desgined for comparing simulated and reconstructed intensity fields together, but does have some basic tools for performing particle tracking in 3D.  I have never tested it for this purpose, but it would be a place to start if this was to be developed.  The code has been significantly tested.
+
+'image_calibration_parameters_01.m'
+
+This function was designed for comparing simulated and reconstructed intensity fields, but it could be used as the basis for writing a complete tomographic PIV software project since it contains all the necessary information for peforming the reconstructions and analyzing the data.
+
+'medfilt3.m'
+
+This function performs a median filter on an image in 3D.  I downloaded this from the mathworks site.  This code is here since it can be used to filter 3D reconstructed particle fields to remove ghost particles and random background noise.  I haven't personally tested the code quantitatively, but I am assumming that it does what it says it does . . .
+
+'particle_id_3d_01.m'
+
+This function IDs particles in a 3D intensity field and does a basic spherical Gaussian fit to the particles.  This function could be used as the basis of a 3D particle tracking algorithm.  The code has been relatively thoroughly tested.
+
+'pranaPIV3D_parallel_code_runner_02' and 'pranaPIV3D_parallel_code_runner_03'
+
+These two codes are used for running the 3D correlations on the 3D images.  The difference between the two is that version 03 takes the parameters data as input while in version 02 the parameters have to be manually programmed into the function.  The code is designed to run on multiple computers at once.  The user just has to open the code on multiple networked computers and run it to process the PIV data in parallel.  It works relatively well, but if the worker computers are stopped and started it slows things down quite a bit (the same frame may be redundantly processed on several computers at once if the code is stopped and started again).  This code has been tested pretty significatnly.
+
+'pranaPIV3Dcode_mem_opt_04.m'
+
+This is the part of the 3D correlations code that does the actual correlations.  This version is optimized to not eat up nearly as much memory as the previous versions, although it can still take around 10 GB of RAM per instance to run it, so it can only be ran in parallel on computers with a lot of RAM.  This code hasn't been validated in the same way as the 2D prana has, but it seems to work fine.
+
+'reprojection_tomography_08.m'
+
+This is the code that does the MLOS reconstructions given the camera images and the calibration data.  This code has been pretty thoroughly tested.  The main things that will need to be figured out with this is the form of the input parameters (which are created by 'tomography_parameters_02.m' and 'image_calibration_parameters_01.m'.
+
+'tomo_3d_volume_01.m'
+
+This code is start of some code to perform MART reconstructions on a data set.  The code was never finished and currently only calculates the weighting array W.  This calculation process is contained within three 'for' loops and likely could be sped up significantly by vectorizing the process.  The voxel weighting is calculated by assumming that the projection of a pixel into 3D space may be represented by a cylinder of appropriate diameter and that the voxels may be represented by spheres.  Then the weighting is proportional to the intersection volume of the two objects.  More recent tomography work has replaced this model with a more advanced model that is closer to the actual solution (but this model has been shown to work well).
+
+'tomography_parameters_02.m'
+
+This function creates a data structure to be used in performing the MLOS reconstructions.  This was primarilly designed for performing simulations so it may need to modified a bit for experimental data.  The code doesn't do any actual processing.
+
